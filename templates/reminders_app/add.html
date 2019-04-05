@@ -1,0 +1,12 @@
+<h2>Add Reminder</h2>
+<h5 style="color: {{outcome}}">{{message}}</h5>
+<form action="{% url 'reminders_app:insert' %}" method="post">
+	{% csrf_token %}
+	<label for="title">Title</label>
+	<input type="text" name="title" required><br><br>
+	<input type="date" name="date" required>
+	<input type="time" name="time" required><br><br>
+	<label for="note">Note</label>
+	<textarea name="note"></textarea><br><br>
+	<input type="submit" value="Add">
+</form>

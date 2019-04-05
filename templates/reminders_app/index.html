@@ -1,9 +1,11 @@
+<h2>Reminders</h2>
 {% if latest_reminder_list %}
 	<ul>
 		{% for reminder in latest_reminder_list %}
-			<li><a href="{% url 'detail' reminder.id %}">{{reminder.title}}</a></li>
+			<li><a href="{% url 'reminders_app:detail' reminder.id %}">{{reminder.title}}</a></li>
 		{% endfor %}
 	</ul>
 {% else %}
 	<p>No reminders!</p>
 {% endif %}
+<button onclick="location.href='{% url "reminders_app:add" %}'">Add Reminder</button>
