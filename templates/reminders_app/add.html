@@ -1,5 +1,5 @@
 <h2>Add Reminder</h2>
-<h5 style="color: {{outcome}}">{{message}}</h5>
+{% if error_message %}<p style="color: red"><strong>{{ error_message }}</strong></p>{% endif %}
 <form action="{% url 'reminders_app:insert' %}" method="post">
 	{% csrf_token %}
 	<label for="title">Title</label>

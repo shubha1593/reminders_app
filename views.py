@@ -2,6 +2,7 @@ from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
 from django.http import HttpResponse, HttpResponseRedirect
 from django.views import generic
+import datetime
 #from django.template import loader
 
 from .models import Reminder
@@ -27,13 +28,16 @@ def add(request):
 
 def insert(request):
 	data_dict = request.POST
-	context = {}
+	print (data_dict)
+	date = datetime.datetime.strptime(data_dict['date'], "%Y-%m-%d").date()
+	time = datetime.datetime.strptime(data_dict['time'], "%H:%M").time()
 	try:
-		reminder = Reminder.objects.create(title=data_dict['title'], date=data_dict['date'], time=data_dict['time'], note=data_dict['note'])
-		context['message'] = "Reminder added successfully!"
-		context['outcome'] = "green"
-	except(KeyError, Reminder.DoesNotExist):
-		context['message'] = "Error adding reminder. Make sure you filled in all the fields!"
-		context['outcome'] = "red"
-	return HttpResponseRedirect(reverse('reminders_app:detail', args=(reminder.id,)))
-
+		reminder = Reminder(title=data_dict['title'], date=date, time=time, note=data_dict['note'])
+	except (KeyError, Reminder.DoesNotExist):
+		return render(request, 'reminders_app/add.html', {'error_message': "You haven't filled in all the fields."})
+	else:
+		if reminder.are_time_date_valid():
+			reminder.save()
+			return HttpResponseRedirect(reverse('reminders_app:detail', args=(reminder.id,)))
+		else:
+			return render(request, 'reminders_app/add.html', {'error_message': "Can't remind you for an event in the past!"})
